@@ -1,0 +1,73 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntiSerum.Server", "AntiSerum\Server\AntiSerum.Server.csproj", "{56E4CCA9-A89E-469F-9CC6-096D81B7E8A7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntiSerum.Client", "AntiSerum\Client\AntiSerum.Client.csproj", "{F9215C0E-82DD-4002-A441-60AA0378DDC9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntiSerum.Shared", "AntiSerum\Shared\AntiSerum.Shared.csproj", "{C76CE87E-BBD9-41FB-B9DC-E08FE039319A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntiSerum.Client.Tests", "AntiSerum.Client.Tests\AntiSerum.Client.Tests.csproj", "{B0E9896C-DEDD-4E1C-B53F-E233AB2C30E4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F9215C0E-82DD-4002-A441-60AA0378DDC9} = {F9215C0E-82DD-4002-A441-60AA0378DDC9}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntiSerum.Server.Tests", "AntiSerum.Server.Tests\AntiSerum.Server.Tests.csproj", "{749E2C1D-D5EA-41F1-887A-A0C7E310E4CC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{56E4CCA9-A89E-469F-9CC6-096D81B7E8A7} = {56E4CCA9-A89E-469F-9CC6-096D81B7E8A7}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntiSerum.Shared.Tests", "AntiSerum.Shared.Tests\AntiSerum.Shared.Tests.csproj", "{6FB9B232-7285-457F-9BA2-51CDC97C8134}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C76CE87E-BBD9-41FB-B9DC-E08FE039319A} = {C76CE87E-BBD9-41FB-B9DC-E08FE039319A}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E3B6D4F9-F66B-4205-A791-44A4E5C6B545}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		CONTRIBUTING.md = CONTRIBUTING.md
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{56E4CCA9-A89E-469F-9CC6-096D81B7E8A7}.Debug|x64.ActiveCfg = Debug|x64
+		{56E4CCA9-A89E-469F-9CC6-096D81B7E8A7}.Debug|x64.Build.0 = Debug|x64
+		{56E4CCA9-A89E-469F-9CC6-096D81B7E8A7}.Release|x64.ActiveCfg = Release|x64
+		{56E4CCA9-A89E-469F-9CC6-096D81B7E8A7}.Release|x64.Build.0 = Release|x64
+		{F9215C0E-82DD-4002-A441-60AA0378DDC9}.Debug|x64.ActiveCfg = Debug|x64
+		{F9215C0E-82DD-4002-A441-60AA0378DDC9}.Debug|x64.Build.0 = Debug|x64
+		{F9215C0E-82DD-4002-A441-60AA0378DDC9}.Release|x64.ActiveCfg = Release|x64
+		{F9215C0E-82DD-4002-A441-60AA0378DDC9}.Release|x64.Build.0 = Release|x64
+		{C76CE87E-BBD9-41FB-B9DC-E08FE039319A}.Debug|x64.ActiveCfg = Debug|x64
+		{C76CE87E-BBD9-41FB-B9DC-E08FE039319A}.Debug|x64.Build.0 = Debug|x64
+		{C76CE87E-BBD9-41FB-B9DC-E08FE039319A}.Release|x64.ActiveCfg = Release|x64
+		{C76CE87E-BBD9-41FB-B9DC-E08FE039319A}.Release|x64.Build.0 = Release|x64
+		{B0E9896C-DEDD-4E1C-B53F-E233AB2C30E4}.Debug|x64.ActiveCfg = Debug|x64
+		{B0E9896C-DEDD-4E1C-B53F-E233AB2C30E4}.Debug|x64.Build.0 = Debug|x64
+		{B0E9896C-DEDD-4E1C-B53F-E233AB2C30E4}.Release|x64.ActiveCfg = Release|x64
+		{B0E9896C-DEDD-4E1C-B53F-E233AB2C30E4}.Release|x64.Build.0 = Release|x64
+		{749E2C1D-D5EA-41F1-887A-A0C7E310E4CC}.Debug|x64.ActiveCfg = Debug|x64
+		{749E2C1D-D5EA-41F1-887A-A0C7E310E4CC}.Debug|x64.Build.0 = Debug|x64
+		{749E2C1D-D5EA-41F1-887A-A0C7E310E4CC}.Release|x64.ActiveCfg = Release|x64
+		{749E2C1D-D5EA-41F1-887A-A0C7E310E4CC}.Release|x64.Build.0 = Release|x64
+		{6FB9B232-7285-457F-9BA2-51CDC97C8134}.Debug|x64.ActiveCfg = Debug|x64
+		{6FB9B232-7285-457F-9BA2-51CDC97C8134}.Debug|x64.Build.0 = Debug|x64
+		{6FB9B232-7285-457F-9BA2-51CDC97C8134}.Release|x64.ActiveCfg = Release|x64
+		{6FB9B232-7285-457F-9BA2-51CDC97C8134}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2640310C-CDD0-4662-9C6D-8686BBC193E8}
+	EndGlobalSection
+EndGlobal
