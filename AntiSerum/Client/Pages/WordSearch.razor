@@ -1,0 +1,50 @@
+﻿@page "/searchWord"
+@using AntiSerum.Client.Models
+@using System.Diagnostics;
+@inject IHttpClientFactory HttpClientFactory
+@inject IJSRuntime jsRuntime
+
+<h1>Word Search</h1>
+
+<p>Message: @message</p>
+<p>Time: @timer /s</p>
+
+<EditForm Model="@wordSearchValidation" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="word" @bind-Value="wordSearchValidation.Word" />
+
+    <button type="submit">Search</button>
+</EditForm>
+
+@code {
+    //wordSearchValidation is a model? component? that allows validation on our InputText
+    //https://docs.microsoft.com/en-us/aspnet/core/blazor/forms-validation?view=aspnetcore-3.1
+    private WordValidation wordSearchValidation = new WordValidation();
+
+    private string message = "";
+    private decimal timer = (decimal)0.00;
+
+    public async Task HandleValidSubmit()
+    {
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+        message = "Searching word...";
+        timer = (decimal)0.00;
+
+        //Blazor's initial enviroment is wierd. We wouldn't usually need this variable, but because
+        //our inital enviroment is setup to require a token when making Controller requests, we need this
+        //variable to bypass it.
+        var client = HttpClientFactory.CreateClient("BlazorApp.PublicServerAPI");
+
+        //Calls a Post (It really should be a get or something) on the SearchWordController
+        var response = await client.PostAsJsonAsync<string>("api/SearchWord", wordSearchValidation.Word);
+
+        //Spit back the response back to the UI
+        message = "'" + wordSearchValidation.Word + ( response.StatusCode.ToString() == "OK" ? "' was found" : "' was not found");
+        sw.Stop();
+
+        timer = (decimal)sw.ElapsedMilliseconds/ (decimal)1000;
+    }
+}

@@ -13,6 +13,8 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using AntiSerum.Server.Data;
 using AntiSerum.Server.Models;
+using AntiSerum.Server.Services;
+using System.Net.Http;
 
 namespace AntiSerum.Server
 {
@@ -44,6 +46,9 @@ namespace AntiSerum.Server
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddTransient<WordSearchService>();
+            services.AddControllers();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

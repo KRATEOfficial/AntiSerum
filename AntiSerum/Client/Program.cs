@@ -26,6 +26,9 @@ namespace AntiSerum.Client
 
             builder.Services.AddApiAuthorization();
 
+            //Allow to use unprotected endpoint?
+            builder.Services.AddHttpClient("BlazorApp.PublicServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+
             await builder.Build().RunAsync();
         }
     }
