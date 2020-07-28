@@ -29,17 +29,17 @@ namespace AntiSerum.Server.Controllers
         /// <param name="word"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Post([FromBody] string word)
+        public IActionResult Post([FromBody] WordValidation wordObj)
         {
-            bool isFound = WordSearchService.search(word);
+            int foundCount = WordSearchService.search(wordObj.Word, wordObj.findOne);
 
-            if (isFound)
+            if (foundCount == 0)
             {
-                return Ok();
+                return NotFound();
             }
             else
             {
-                return NotFound();
+                return Ok(foundCount);
             }
         }
     }
