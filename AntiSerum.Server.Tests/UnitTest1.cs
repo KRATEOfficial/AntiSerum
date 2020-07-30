@@ -1,7 +1,7 @@
 using System;
+using Microsoft.AspNetCore.Hosting;
 using Xunit;
 using AntiSerum.Server.Services;
-using Microsoft.AspNetCore.Hosting;
 
 namespace AntiSerum.Server.Tests
 {
@@ -16,7 +16,8 @@ namespace AntiSerum.Server.Tests
             WordSearchService test = new WordSearchService(webHostEnvironment);
             Assert.Equal(100, test.search(searchWord, findOne));
         }
-        public static void Main(){
+        public static void Main()
+        {
             string searchWord = "testing";
             WordSearchService test = new WordSearchService(webHostEnvironment);
             Console.WriteLine(test.search(searchWord, true)); 
