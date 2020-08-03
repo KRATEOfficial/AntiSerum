@@ -14,13 +14,14 @@ namespace AntiSerum.Server.Tests
             string searchWord = "testing";
             bool findOne = true;
             WordSearchService test = new WordSearchService(webHostEnvironment);
-            Assert.Equal(100, test.search(searchWord, findOne));
+            var hold = test.search(searchWord, findOne);
+            Assert.Equal(100, hold);
         }
-        public static void Main()
+        /*public static void Main()
         {
             string searchWord = "testing";
             WordSearchService test = new WordSearchService(webHostEnvironment);
             Console.WriteLine(test.search(searchWord, true)); 
-        }
+        }*/
     }
 }
