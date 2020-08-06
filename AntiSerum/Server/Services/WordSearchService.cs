@@ -184,7 +184,6 @@ namespace AntiSerum.Server.Services
         public int search(string searchWord, bool findOne)
         {
             string path = findOne ? "HashedInputDataWordsAlpha.bin" : "HashedInputDataNotUniqueWordList.bin";
-            Console.WriteLine(Directory.GetCurrentDirectory());
             readHashedInputData(path);
             setupCiphers();
 
