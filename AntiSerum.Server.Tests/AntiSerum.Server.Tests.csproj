@@ -56,4 +56,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include = "..\AntiSerum\Server\AntiSerum.Server.csproj" />
+  </ItemGroup>
+
 </Project>
