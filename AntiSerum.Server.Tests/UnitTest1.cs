@@ -7,21 +7,24 @@ namespace AntiSerum.Server.Tests
 {
     public class UnitTest1
     {   
+        //The hashed word lists must be stored in this file for testing to work.
+        //AntiSerum/AntiSerum.Shared.Tests/bin/x64/Debug/netcoreapp3.1/hashedWordLists
         public IWebHostEnvironment webHostEnvironment { get; }
-        [Fact]
-        public void Test1()
+        [Theory]
+        [InlineData("test")]
+        public void OneWordRetunIfFound(string searchWord)
         {
-            string searchWord = "testing";
             bool findOne = true;
             WordSearchService test = new WordSearchService(webHostEnvironment);
-            var hold = test.search(searchWord, findOne);
-            Assert.Equal(100, hold);
+            Assert.Equal(1, test.search(searchWord, findOne));
         }
-        /*public static void Main()
+        [Theory]
+        [InlineData("test", 235)]
+        public void OneWordRetunrHowManyFound(string searchWord, int returnValue)
         {
-            string searchWord = "testing";
+            bool findOne = false;
             WordSearchService test = new WordSearchService(webHostEnvironment);
-            Console.WriteLine(test.search(searchWord, true)); 
-        }*/
+            Assert.Equal(returnValue, test.search(searchWord, findOne));
+        }
     }
 }
