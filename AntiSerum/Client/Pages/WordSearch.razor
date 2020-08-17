@@ -46,8 +46,12 @@ else
     private bool findOne = true;
     string responseMessage = "";
 
+
     public async Task HandleValidSubmit()
     {
+
+        //await JSRuntime.InvokeVoidAsync("testfunc", "Hello World!!!");
+
         Stopwatch sw = new Stopwatch();
         sw.Start();
         message = (MarkupString)"<i>Searching word...</i>";

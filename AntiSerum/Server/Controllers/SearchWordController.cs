@@ -7,6 +7,7 @@ using AntiSerum.Client.Models;
 using AntiSerum.Server.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.NodeServices;
 using Microsoft.Extensions.Logging;
 
 namespace AntiSerum.Server.Controllers
@@ -29,9 +30,9 @@ namespace AntiSerum.Server.Controllers
         /// <param name="word"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Post([FromBody] WordValidation wordObj)
+        public IActionResult Post([FromBody] WordValidation wordObj, [FromServices] INodeServices nodeServices)
         {
-            int foundCount = WordSearchService.search(wordObj.Word, wordObj.findOne);
+            int foundCount = WordSearchService.search(wordObj.Word, wordObj.findOne, nodeServices).Result;
 
             if (foundCount == 0)
             {

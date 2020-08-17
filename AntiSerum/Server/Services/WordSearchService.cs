@@ -7,16 +7,19 @@ using System.Text;
 using System.Threading.Tasks;
 using Konscious.Security.Cryptography;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.NodeServices;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.JSInterop;
 using Microsoft.Research.SEAL;
 
 namespace AntiSerum.Server.Services
 {
     public class WordSearchService
     {
-        public WordSearchService(IWebHostEnvironment webHostEnvironment)
+        public WordSearchService(IWebHostEnvironment webHostEnvironment, IJSRuntime jsRuntime)
         {
             WebHostEnvironment = webHostEnvironment;
+            this.jsRuntime = jsRuntime;
 
             ulong polyModulusDegree = 4096;
 
@@ -52,6 +55,8 @@ namespace AntiSerum.Server.Services
             //hashInputData("HashedInputDataNotUniqueWordList.bin");
         }
 
+        private readonly IJSRuntime jsRuntime;
+
         public IWebHostEnvironment WebHostEnvironment { get; }
 
         //Data
@@ -80,6 +85,7 @@ namespace AntiSerum.Server.Services
         {
             this.inputData = inputData;
         }
+
 
         /// <summary>
         /// Hashes the input data file and writes out the hashes to the specified path as a bin file
@@ -181,8 +187,9 @@ namespace AntiSerum.Server.Services
             return encryptedDataList.Count;
         }
 
-        public int search(string searchWord, bool findOne)
+        public async Task<int> search(string searchWord, bool findOne, INodeServices nodeServices)
         {
+
             string path = findOne ? "HashedInputDataWordsAlpha.bin" : "HashedInputDataNotUniqueWordList.bin";
             readHashedInputData(path);
             setupCiphers();
@@ -218,25 +225,48 @@ namespace AntiSerum.Server.Services
             int index = 0;
             int totalWordCount = 0;
 
+            //jsRuntime.InvokeVoidAsync("testfunc", "Hello World!!!");
+                
             while (index < encryptedDataList.Count)
             {
+                
+
                 //Will (in order) load in the parameters, searchValue, and inputData
                 MemoryStream memStream = new MemoryStream();
 
+                MemoryStream memStreamParams = new MemoryStream();
+                MemoryStream memStreamSearch = new MemoryStream();
+                MemoryStream memStreamList = new MemoryStream();
+
                 //Save parameters
                 parms.Save(memStream, ComprModeType.Deflate);
+                parms.Save(memStreamParams, ComprModeType.Deflate);
+                memStreamParams.Seek(0, SeekOrigin.Begin);
 
                 //Save search value
                 encryptedSearchValue.Save(memStream, ComprModeType.Deflate);
+                encryptedSearchValue.Save(memStreamSearch, ComprModeType.Deflate);
+                memStreamSearch.Seek(0, SeekOrigin.Begin);
 
                 //Save input data
                 encryptedDataList[index].Save(memStream, ComprModeType.Deflate);
+                encryptedDataList[index].Save(memStreamList, ComprModeType.Deflate);
+                memStreamList.Seek(0, SeekOrigin.Begin);
 
                 //Seek to the start
                 memStream.Seek(0, SeekOrigin.Begin);
 
+                var streamParamString = Convert.ToBase64String(memStreamParams.ToArray());
+                var streamSearchString = Convert.ToBase64String(memStreamSearch.ToArray());
+                var streamListString = Convert.ToBase64String(memStreamList.ToArray());
+
                 //Compute that memoryStream
-                MemoryStream resultMemStream = compute(memStream);
+                //MemoryStream resultMemStream = compute(memStream); //original Compute method
+                //Using INodeServices, we are able to create a js module that computes (compares) our data using node-seal
+                //https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.nodeservices.inodeservices?view=aspnetcore-3.0
+                var result = await nodeServices.InvokeExportAsync<string>("./computeSEAL", "compute", streamParamString, streamSearchString, streamListString);
+                MemoryStream resultMemStream = new MemoryStream(Convert.FromBase64String(result));
+
 
                 //Load into a Ciphertext
                 using Ciphertext encryptedResults = new Ciphertext();
@@ -280,46 +310,46 @@ namespace AntiSerum.Server.Services
         }
 
 
-        private static MemoryStream compute(MemoryStream memStream)
-        {
-            //Load the variables from the memory stream
-            EncryptionParameters parms = new EncryptionParameters();
-            parms.Load(memStream);
+        //private static MemoryStream compute(MemoryStream memStream)
+        //{
+        //    //Load the variables from the memory stream
+        //    EncryptionParameters parms = new EncryptionParameters();
+        //    parms.Load(memStream);
 
-            //Create the context and evaluator based on the parms
-            SEALContext context = new SEALContext(parms);
-            using Evaluator evaluator = new Evaluator(context);
+        //    //Create the context and evaluator based on the parms
+        //    SEALContext context = new SEALContext(parms);
+        //    using Evaluator evaluator = new Evaluator(context);
 
-            //Create the search Ciphertext
-            using Ciphertext encryptedSearchValue = new Ciphertext();
-            encryptedSearchValue.Load(context, memStream);
+        //    //Create the search Ciphertext
+        //    using Ciphertext encryptedSearchValue = new Ciphertext();
+        //    encryptedSearchValue.Load(context, memStream);
 
-            //Create the data Ciphertext
-            using Ciphertext encryptedDataMatrix = new Ciphertext();
-            encryptedDataMatrix.Load(context, memStream);
+        //    //Create the data Ciphertext
+        //    using Ciphertext encryptedDataMatrix = new Ciphertext();
+        //    encryptedDataMatrix.Load(context, memStream);
 
-            //Create the result Ciphertext and do the subtraction between the two ciphertexts
-            using Ciphertext encryptedDataResult = new Ciphertext();
-            evaluator.Sub(encryptedDataMatrix, encryptedSearchValue, encryptedDataResult);
+        //    //Create the result Ciphertext and do the subtraction between the two ciphertexts
+        //    using Ciphertext encryptedDataResult = new Ciphertext();
+        //    evaluator.Sub(encryptedDataMatrix, encryptedSearchValue, encryptedDataResult);
 
-            //Create the return memory stream and save the results to it
-            MemoryStream returnMemStream = new MemoryStream();
-            encryptedDataResult.Save(returnMemStream, ComprModeType.Deflate);
+        //    //Create the return memory stream and save the results to it
+        //    MemoryStream returnMemStream = new MemoryStream();
+        //    encryptedDataResult.Save(returnMemStream, ComprModeType.Deflate);
 
-            //Seek to the start
-            returnMemStream.Seek(0, SeekOrigin.Begin);
+        //    //Seek to the start
+        //    returnMemStream.Seek(0, SeekOrigin.Begin);
 
-            //Dispose everything (Unsure if necessary)
-            //memStream.Dispose();
-            //encryptedSearchValue.Dispose();
-            //encryptedDataMatrix.Dispose();
-            //encryptedDataResult.Dispose();
-            //evaluator.Dispose();
-            context.Dispose();
-            parms.Dispose();
+        //    //Dispose everything (Unsure if necessary)
+        //    //memStream.Dispose();
+        //    //encryptedSearchValue.Dispose();
+        //    //encryptedDataMatrix.Dispose();
+        //    //encryptedDataResult.Dispose();
+        //    //evaluator.Dispose();
+        //    context.Dispose();
+        //    parms.Dispose();
 
-            return returnMemStream;
-        }
+        //    return returnMemStream;
+        //}
 
     }
 }

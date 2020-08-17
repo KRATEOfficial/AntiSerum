@@ -15,6 +15,7 @@ using AntiSerum.Server.Data;
 using AntiSerum.Server.Models;
 using AntiSerum.Server.Services;
 using System.Net.Http;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace AntiSerum.Server
 {
@@ -48,6 +49,9 @@ namespace AntiSerum.Server
             services.AddRazorPages();
             services.AddTransient<WordSearchService>();
             services.AddControllers();
+
+            services.AddNodeServices();
+           
 
         }
 
